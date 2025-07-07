@@ -24,13 +24,13 @@ export default function Home() {
     opacity: `${(Math.random() * 0.2) + 0.05}`, // Opacidade entre 0.05 e 0.25 para ser sutil e confortável
   }));
 
-  // Ocultar a barra de rolagem se houver conteúdo flutuante que a ative
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
+  // REMOVIDO: Ocultar a barra de rolagem. Agora a rolagem é permitida e estilizada via CSS.
+  // useEffect(() => {
+  //   document.body.style.overflow = 'hidden';
+  //   return () => {
+  //     document.body.style.overflow = '';
+  //   };
+  // }, []);
 
   return (
     <div className="min-h-screen bg-github-bg relative overflow-hidden">
@@ -149,7 +149,9 @@ export default function Home() {
                 </div>
               </div>
 
-              
+              {/* ORIGINAL Floating Elements - REMOVIDOS CONFORME SOLICITADO */}
+              {/* <div className="absolute top-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-full animate-float blur-sm shadow-3d-deep"></div>
+              <div className="absolute bottom-8 left-8 w-12 h-12 bg-gradient-to-br from-blue-500/20 to-blue-700/20 rounded-lg animate-float blur-sm shadow-3d-deep" style={{ animationDelay: '-2s' }}></div> */}
             </section>
 
             {/* Pinned Repositories */}
@@ -164,8 +166,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Advanced Floating Background Elements */}
-      {/* Estes elementos também flutuarão sobre o CanvasBackground, mas abaixo do conteúdo principal, pois o CanvasBackground e as partículas CSS têm z-index 0. */}
+      {/* Advanced Floating Background Elements - MANTIDOS */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-40 h-40 floating-element opacity-10 animate-float">
           <div className="w-full h-full bg-gradient-to-br from-blue-500/30 to-blue-600/20 rounded-full blur-2xl shadow-3d-deep" />

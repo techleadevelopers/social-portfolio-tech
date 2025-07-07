@@ -74,12 +74,12 @@ export default function ProfileSidebar() {
             </div>
           </div>
           
-          <h1 className="text-2xl font-bold text-github-text mb-2 hero-name text-shadow-glow">
+          <h1 className="text-xl font-bold text-github-text mb-2 hero-name text-shadow-glow">
             {user.name || user.login}
           </h1>
           <p className="text-blue-400 mb-1 transition-colors duration-300 hover:text-blue-300">@{user.login}</p>
           {user.bio && (
-            <p className="text-github-success font-medium mb-4">{user.bio}</p>
+            <p className="text-[14px] text-github-success font-medium mb-4">{user.bio}</p>
           )}
         </div>
 

@@ -12,7 +12,7 @@ const CanvasBackground: React.FC = () => {
 
     let animationFrameId: number;
     const particles: { x: number; y: number; vx: number; vy: number; radius: number; color: string; opacity: number }[] = [];
-    const numParticles = 500; // Número de partículas
+    const numParticles = 300; // Número de partículas
     const maxRadius = 2; // Tamanho máximo da partícula
     const minRadius = 0.5; // Tamanho mínimo da partícula
     const connectionDistance = 150; // Distância para conectar partículas
