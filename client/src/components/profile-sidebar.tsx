@@ -1,10 +1,12 @@
 import { MapPin, Link, Calendar, Users, Star, GitFork } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGitHubUser } from "@/hooks/use-github-data";
+// CORREÇÃO: Usar useGitHubProfile conforme definido em use-github-data.ts
+import { useGitHubProfile } from "@/hooks/use-github-data"; // Use o hook correto aqui!
 
 export default function ProfileSidebar() {
-  const { data: user, isLoading } = useGitHubUser();
+  // Use o hook useGitHubProfile para buscar os dados do usuário do GitHub
+  const { data: user, isLoading, isError, error } = useGitHubProfile(); // Adicione isError e error para melhor tratamento
 
   if (isLoading) {
     return (
@@ -12,20 +14,34 @@ export default function ProfileSidebar() {
         <div className="glass-effect rounded-xl p-6">
           <div className="text-center space-y-4">
             <Skeleton className="w-32 h-32 rounded-full mx-auto" />
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-6 w-48 mx-auto" /> {/* Adicionado mx-auto */}
+            <Skeleton className="h-4 w-32 mx-auto" /> {/* Adicionado mx-auto */}
+            <Skeleton className="h-4 w-40 mx-auto" /> {/* Adicionado mx-auto */}
           </div>
         </div>
       </div>
     );
   }
 
+  // Tratamento de erro aprimorado
+  if (isError) {
+    return (
+      <div className="sticky top-24">
+        <div className="glass-effect rounded-xl p-6 text-center">
+          <p className="text-red-500 mb-2">Erro ao carregar dados do perfil.</p>
+          <p className="text-github-muted text-sm">Detalhes: {error?.message || "Erro desconhecido"}</p>
+          <p className="text-github-muted text-sm mt-1">Verifique seu nome de usuário do GitHub em `use-github-data.ts` ou sua conexão.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Caso não haja usuário retornado (ex: 404, mas sem erro de rede)
   if (!user) {
     return (
       <div className="sticky top-24">
         <div className="glass-effect rounded-xl p-6 text-center">
-          <p className="text-github-muted">Failed to load profile data</p>
+          <p className="text-github-muted">Nenhum dado de perfil disponível.</p>
         </div>
       </div>
     );
@@ -78,6 +94,8 @@ export default function ProfileSidebar() {
           </div>
         </div>
 
+        
+
         {user.location && (
           <div className="flex items-center justify-center space-x-2 text-sm text-github-muted mb-2">
             <MapPin className="w-4 h-4" />
@@ -88,7 +106,7 @@ export default function ProfileSidebar() {
         {user.blog && (
           <div className="flex items-center justify-center space-x-2 text-sm text-github-muted mb-2">
             <Link className="w-4 h-4" />
-            <a href={user.blog} className="text-github-success hover:underline">
+            <a href={user.blog} className="text-github-success hover:underline" target="_blank" rel="noopener noreferrer">
               {user.blog}
             </a>
           </div>
@@ -96,7 +114,7 @@ export default function ProfileSidebar() {
 
         <div className="flex items-center justify-center space-x-2 text-sm text-github-muted mb-4">
           <Calendar className="w-4 h-4" />
-          <span>Joined {new Date(user.created_at).toLocaleDateString()}</span>
+          <span>Joined {new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
         </div>
 
 
@@ -114,11 +132,12 @@ export default function ProfileSidebar() {
           </div>
         </div>
 
+        {/* Estes valores estão hardcoded. Para puxar do GitHub, precisaria de mais lógica. */}
         <div className="stats-card rounded-xl p-4 floating-card">
           <div className="flex items-center space-x-3">
             <Star className="w-5 h-5 text-github-success" />
             <div>
-              <div className="font-semibold text-github-text">50+</div>
+              <div className="font-semibold text-github-text">50+</div> {/* Hardcoded */}
               <div className="text-sm text-github-muted">Stars Earned</div>
             </div>
           </div>
@@ -128,7 +147,7 @@ export default function ProfileSidebar() {
           <div className="flex items-center space-x-3">
             <Users className="w-5 h-5 text-github-success" />
             <div>
-              <div className="font-semibold text-github-text">15+</div>
+              <div className="font-semibold text-github-text">15+</div> {/* Hardcoded */}
               <div className="text-sm text-github-muted">Collaborators</div>
             </div>
           </div>

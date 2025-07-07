@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Background</title>
+    <!-- Você precisaria linkar seu CSS aqui, se este fosse um HTML autônomo -->
+    <!-- Exemplo: <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        /* O CSS do CodePen (traduzido de SCSS para CSS puro) iria aqui,
+           ou você o colocaria no seu index.css e o linkaria. */
+
+        body {
+            margin: 0;
+            background-color: transparent; /* Alterado para transparente para ser um fundo */
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overlay {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            z-index: 2;
+            /* Alterado para transparente, pois o fundo roxo não é desejado */
+            background: radial-gradient(circle, transparent 0%, transparent 100%);
+        }
+
+        .container {
+            display: grid;
+            /* Estes valores serão dinâmicos se você os controlar via JS/React */
+            grid-template-columns: repeat(10, 200px); /* $cols, $shapeWidth */
+            grid-template-rows: repeat(6, 230px); /* $rows, $shapeHeight */
+            transform: translate(-3%, -4%); /* Ponto inicial que sangra a borda */
+            position: absolute; /* Adicionado para posicionamento dentro de um pai */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            width: 200px; /* $shapeWidth */
+            height: 230px; /* $shapeHeight */
+            /* Máscara de hexágono - O CodePen original usa hexágonos aqui no CSS, não triângulos */
+            /* Se a imagem mostra triângulos, o clip-path abaixo está incorreto para a imagem */
+            /* e deveria ser removido ou alterado para um clip-path de triângulo se os SVGs forem triângulos */
+            -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+
+            /* Lógica de snap dos hexágonos (traduzida do SCSS) */
+            /* Isso é complexo para aplicar via nth-child puro em HTML estático sem um pré-processador */
+            /* A forma mais simples seria gerar esses transforms via JS ou ter um CSS muito longo */
+            /* Para este HTML estático, vou deixar o CSS original do CodePen para o snap,
+               mas ele não será dinâmico como em React. */
+            /* Apenas para referência, o SCSS traduzido seria: */
+            /*
+            @for $i from 1 through 60 { // $cells
+                &:nth-child(#{$i}) {
+                    @if $i > 10 { transform: translate(-50%, -25%); }
+                    @if $i > 20 { transform: translate(0%, -50%); }
+                    @if $i > 30 { transform: translate(-50%, -75%); }
+                    @if $i > 40 { transform: translate(0%, -100%); }
+                    @if $i > 50 { transform: translate(-50%, -125%); }
+                }
+            }
+            */
+            /* Para este HTML, ele será estático, então o transform individual não será aplicado por nth-child */
+            /* Ele precisaria ser aplicado inline ou via JS */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Create Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Instantiate triangles -->
+    <div class="container">
+        <!-- Loop para instanciar triângulos (traduzido do Pug/Jade) -->
+        <!-- O Pug usa um loop para gerar 60 SVGs -->
+        <!-- Em HTML puro, você teria que gerar 60 blocos SVG manualmente ou via JS -->
+        <!-- Aqui está a estrutura para um único SVG, você precisaria duplicar 60 vezes -->
+        <!-- As cores e o 'begin' da animação seriam fixos em HTML puro -->
+        
+        <!-- Exemplo de um único SVG com triângulos -->
+        <!-- Para 60, você duplicaria este bloco 60 vezes, ajustando cores e begin -->
+        <!-- A lógica de cores intercaladas e begin dinâmico é mais fácil em React/JS -->
+        
+        <!-- Triângulo 1 -->
+        <svg class="shape" viewBox="0 0 100 115" preserveAspectRatio="xMidYMin slice">
+            <polygon points="50 57.5, 50 57.5, 50 57.5" fill="none" stroke="hsl(320,100%,70%)" stroke-width="5">
+                <animate attributeName="points" repeatCount="indefinite" dur="4s" begin="0s" from="50 57.5, 50 57.5, 50 57.5" to="50 -75, 175 126, -75 126"/>
+            </polygon>
+            <polygon points="50 57.5, 50 57.5, 50 57.5" fill="none" stroke="hsl(240,100%,70%)" stroke-width="5">
+                <animate attributeName="points" repeatCount="indefinite" dur="4s" begin="1s" from="50 57.5, 50 57.5, 50 57.5" to="50 -75, 175 126, -75 126"/>
+            </polygon>
+            <polygon points="50 57.5, 50 57.5, 50 57.5" fill="none" stroke="hsl(160,100%,70%)" stroke-width="5">
+                <animate attributeName="points" repeatCount="indefinite" dur="4s" begin="2s" from="50 57.5, 50 57.5, 50 57.5" to="50 -75, 175 126, -75 126"/>
+            </polygon>
+            <polygon points="50 57.5, 50 57.5, 50 57.5" fill="none" stroke="hsl(80,100%,70%)" stroke-width="5">
+                <animate attributeName="points" repeatCount="indefinite" dur="4s" begin="3s" from="50 57.5, 50 57.5, 50 57.5" to="50 -75, 175 126, -75 126"/>
+            </polygon>
+        </svg>
+
+        <!-- Você precisaria duplicar o bloco <svg class="shape"> ... </svg> 59 vezes mais aqui -->
+        <!-- E ajustar manualmente as cores e os 'begin' de cada <animate> -->
+        <!-- O que torna o componente React muito mais prático -->
+
+    </div>
+
+</body>
+</html>

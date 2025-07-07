@@ -30,8 +30,8 @@
   --github-border: hsl(215, 15%, 18%);
   --github-text: hsl(0, 0%, 96%);
   --github-muted: hsl(215, 10%, 65%);
-  --github-accent: hsl(210, 100%, 70%);
-  --github-success: hsl(210, 100%, 60%);
+  --github-accent: hsl(210, 100%, 70%); /* Seu azul para accent */
+  --github-success: hsl(210, 100%, 60%); /* Seu azul para success */
   --github-success2: hsl(210, 100%, 70%);
   --github-success3: hsl(210, 100%, 80%);
 }
@@ -65,11 +65,68 @@
 
   body {
     @apply font-sans antialiased bg-github-bg text-github-text;
+    /* Manter este background, o canvas irá sobrepô-lo */
     background: 
       radial-gradient(circle at 20% 80%, hsl(210, 100%, 15%) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, hsl(210, 100%, 12%) 0%, transparent 50%),
       linear-gradient(135deg, hsl(215, 25%, 7%) 0%, hsl(215, 20%, 9%) 100%);
-    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacMacFont, 'Segoe UI', sans-serif;
+  }
+}
+
+/* NOVAS ANIMAÇÕES BASEADAS NO WELCOME SCREEN (RN) */
+
+@keyframes logoRotateY {
+  0%, 100% {
+    transform: rotateY(-5deg); /* Início da rotação */
+  }
+  50% {
+    transform: rotateY(5deg); /* Fim da rotação */
+  }
+}
+
+@keyframes logoPulseScale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02); /* Escala ligeiramente maior */
+  }
+}
+
+@keyframes reflectionFloatY {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(10px); /* Flutua 10px para baixo */
+  }
+}
+
+@keyframes reflectionSkewX {
+  0%, 100% {
+    transform: skewX(-2deg);
+  }
+  50% {
+    transform: skewX(2deg); /* Distorce 2deg */
+  }
+}
+
+@keyframes reflectionHueRotate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes reflectionOpacityPulse {
+  0%, 100% {
+    opacity: 0.5; /* Opacidade inicial do reflexo */
+  }
+  50% {
+    opacity: 0.2; /* Opacidade menor */
   }
 }
 
@@ -82,6 +139,8 @@
       0 8px 32px rgba(59, 130, 246, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
+
+  
 
   .morphism-card {
     background: linear-gradient(145deg, 
@@ -101,6 +160,8 @@
   }
 
   .floating-card:hover {
+    /* Mantenha o transform original, se for o caso de cards específicos */
+    /* Se este é o floating-card geral, ele pode aplicar um movimento 3D */
     transform: translateY(-12px) scale(1.03) rotateX(5deg);
     box-shadow: 
       0 30px 60px rgba(59, 130, 246, 0.25),
@@ -121,6 +182,37 @@
       0 10px 25px rgba(59, 130, 246, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
+@keyframes float-subtle {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.1;
+  }
+  25% {
+    transform: translate(calc(var(--tw-float-x, 0) * 0.25), calc(var(--tw-float-y, 0) * 0.25)) scale(1.02);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(calc(var(--tw-float-x, 0) * 0.5), calc(var(--tw-float-y, 0) * 0.5)) scale(1.05);
+    opacity: 0.2;
+  }
+  75% {
+    transform: translate(calc(var(--tw-float-x, 0) * 0.75), calc(var(--tw-float-y, 0) * 0.75)) scale(1.02);
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate(var(--tw-float-x, 0), var(--tw-float-y, 0)) scale(1);
+    opacity: 0.1;
+  }
+}
+
+.animate-float-subtle {
+  animation-name: float-subtle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  /* Variáveis CSS para flutuação mais dinâmica */
+  --tw-float-x: calc(var(--random-x, 0) * 100px - 50px); /* Movimento horizontal aleatório */
+  --tw-float-y: calc(var(--random-y, 0) * 100px - 50px); /* Movimento vertical aleatório */
+}
 
   .repo-card::before {
     content: '';
@@ -137,9 +229,9 @@
     left: 100%;
   }
 
-  .repo-card:hover {
+  .repo-card:hover { 
     border-color: hsl(210, 100%, 60%);
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-8px) scale(1.02); /* <-- MANTENDO APENAS TRANSLATE E SCALE PARA REPO-CARD */
     box-shadow: 
       0 20px 40px rgba(59, 130, 246, 0.25),
       0 0 0 1px rgba(59, 130, 246, 0.2),
@@ -158,7 +250,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, hsl(142, 76%, 36%), hsl(142, 70%, 45%));
+    background: linear-gradient(90deg, hsl(270, 70%, 50%), hsl(197, 70%, 45%));
     transition: width 0.3s ease;
   }
 
@@ -275,6 +367,193 @@
     border-radius: 11px;
     height: 100%;
   }
+
+  /* EFEITOS ADICIONADOS AQUI */
+
+  /* Animações de ícones e elementos */
+  .neon-glow {
+    color: var(--github-accent); /* Cor base do neon */
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.8),
+                 0 0 20px rgba(139, 92, 246, 0.6),
+                 0 0 30px rgba(139, 92, 246, 0.4);
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out;
+  }
+
+  .nav-link:hover .neon-glow, /* para ícones da navbar */
+  .group:hover .neon-glow { /* para ícones em cards onde o group é o card */
+    color: var(--github-success); /* Cor neon no hover */
+    text-shadow: 0 0 15px rgba(34, 197, 94, 0.9),
+                 0 0 30px rgba(34, 197, 94, 0.7),
+                 0 0 45px rgba(34, 197, 94, 0.5);
+  }
+
+  .animated-neon {
+    animation: neonPulse 2s ease-in-out infinite alternate;
+  }
+
+  .reflection-3d {
+    position: relative;
+  }
+
+  .reflection-3d::before {
+    content: '';
+    position: absolute;
+    bottom: -8px; /* Distância do reflexo abaixo do ícone */
+    left: 0;
+    width: 100%;
+    height: 50%; /* Altura do reflexo */
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.1) 0%, transparent 100%); /* Gradiente de opacidade para o reflexo */
+    opacity: 0.4;
+    transform: perspective(100px) rotateX(60deg) scaleY(-1); /* Transformações 3D e inversão */
+    filter: blur(3px); /* Desfoque do reflexo */
+    pointer-events: none; /* Para não interferir com eventos do mouse */
+    animation: reflectionFloatY 2.5s ease-in-out infinite alternate, /* Animação de flutuação */
+               reflectionSkewX 3s ease-in-out infinite alternate,    /* Animação de distorção */
+               reflectionHueRotate 5s linear infinite,             /* Rotação de matiz */
+               reflectionOpacityPulse 2s ease-in-out infinite alternate; /* Pulso de opacidade */
+  }
+
+  /* Aplicação para o reflexo no logo principal do GitHub no header, se aplicável */
+  .logo-github-icon-with-reflection {
+      position: relative;
+      /* Você pode precisar ajustar o overflow do pai se o reflexo for cortado */
+  }
+  .logo-github-icon-with-reflection::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Inicia logo abaixo do ícone */
+    left: 0;
+    width: 100%;
+    height: 50%; /* Metade da altura do ícone para o reflexo */
+    transform: scaleY(-1) perspective(100px) rotateX(60deg); /* Inverte, perspectiva e inclina */
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    filter: blur(3px);
+    pointer-events: none;
+    opacity: 0.4;
+    animation: reflectionFloatY 2.5s ease-in-out infinite alternate,
+               reflectionSkewX 3s ease-in-out infinite alternate,
+               reflectionHueRotate 5s linear infinite,
+               reflectionOpacityPulse 2s ease-in-out infinite alternate;
+  }
+
+  .icon-3d-effect {
+    transform-style: preserve-3d;
+    transform: perspective(100px); /* Para um pequeno efeito de profundidade no hover/animação */
+  }
+
+  .animate-logo-rotate {
+    animation: logoRotateY 4s ease-in-out infinite alternate;
+  }
+
+  .animate-logo-pulse {
+    animation: logoPulseScale 1.5s ease-in-out infinite alternate;
+  }
+
+  .animate-reflection-float {
+    animation: reflectionFloatY 2.5s ease-in-out infinite alternate;
+  }
+
+  .animate-reflection-skew {
+    animation: reflectionSkewX 3s ease-in-out infinite alternate;
+  }
+
+  .animate-reflection-hue {
+    animation: reflectionHueRotate 5s linear infinite;
+  }
+
+  .animate-reflection-opacity {
+    animation: reflectionOpacityPulse 2s ease-in-out infinite alternate;
+  }
+
+
+  .glow-effect {
+    position: relative;
+  }
+
+  .glow-effect::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+      rgba(59, 130, 246, 0.3), 
+      rgba(37, 99, 235, 0.5), 
+      rgba(59, 130, 246, 0.3));
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .glow-effect:hover::before {
+    opacity: 1;
+  }
+
+  .reflection-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reflection-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1) 40%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 60%,
+      transparent
+    );
+    transform: skewX(-25deg);
+    transition: left 0.8s ease;
+  }
+
+  .reflection-effect:hover::after {
+    left: 100%;
+  }
+
+  .card-hover-effects {
+    position: relative;
+    background: rgba(59, 130, 246, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .card-hover-effects:hover { /* <--- ESTA É A SEÇÃO ONDE PRECISAMOS ALTERAR */
+    transform: translateY(-12px) scale(1.03); /* Removidas as rotações para zoom uniforme e sem distorção */
+    box-shadow: 
+      0 30px 60px rgba(59, 130, 246, 0.25),
+      0 0 0 1px rgba(59, 130, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 40px rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .modern-icon {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.1));
+  }
+
+  .modern-icon:hover {
+    transform: translateY(-2px) scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.2));
+  }
+
+  /* Line clamp utility */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
 @keyframes float {
@@ -335,17 +614,14 @@
     opacity: 0.8;
     transform: translateX(0) translateY(0) scale(1); 
   }
-  25% { 
+  33% { 
     opacity: 1;
-    transform: translateX(10px) translateY(-10px) scale(1.1); 
+    transform: translateX(10px) translateY(-15px) scale(1.2); /* Adjusted translateY for slight upward movement */
+    filter: blur(0px); /* Ensure no blur on transform */
   }
-  50% { 
+  66% { 
     opacity: 0.9;
-    transform: translateX(-5px) translateY(5px) scale(0.9); 
-  }
-  75% { 
-    opacity: 1;
-    transform: translateX(-10px) translateY(-5px) scale(1.05); 
+    transform: translateX(-5px) translateY(5px) scale(0.8); 
   }
 }
 
@@ -566,7 +842,7 @@
 }
 
 .card-3d:hover {
-  transform: translateY(-10px) rotateX(5deg) rotateY(-5deg) scale(1.02);
+  transform: translateY(-10px) rotateX(5deg) rotateY(-5deg) scale(1.02); /* Esta é para outro tipo de card */
   box-shadow: 
     0 25px 50px rgba(59, 130, 246, 0.2),
     0 0 0 1px rgba(59, 130, 246, 0.1),
@@ -715,8 +991,8 @@
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.card-hover-effects:hover {
-  transform: translateY(-12px) rotateX(8deg) rotateY(-8deg) scale(1.03);
+.card-hover-effects:hover { /* <--- ESTA É A SEÇÃO ONDE PRECISAMOS ALTERAR */
+  transform: translateY(-12px) scale(1.03); /* Removidas as rotações para zoom uniforme e sem distorção */
   box-shadow: 
     0 30px 60px rgba(59, 130, 246, 0.25),
     0 0 0 1px rgba(59, 130, 246, 0.2),

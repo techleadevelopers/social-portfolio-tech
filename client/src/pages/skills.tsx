@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { 
-  Code, 
-  Database, 
-  Cloud, 
+import {
+  Code,
+  Database,
+  Cloud,
   Zap,
   Shield,
   Globe,
@@ -141,10 +141,10 @@ export default function Skills() {
   const currentCategory = skillCategories.find(cat => cat.id === selectedCategory);
 
   const getSkillColor = (level: number) => {
-    if (level >= 90) return "from-green-500 to-green-600";
-    if (level >= 80) return "from-blue-500 to-blue-600";
-    if (level >= 70) return "from-yellow-500 to-yellow-600";
-    return "from-red-500 to-red-600";
+    if (level >= 90) return "from-blue-400 to-blue-600 shadow-blue-500/50";
+    if (level >= 80) return "from-blue-600 to-blue-800 shadow-blue-700/50";
+    if (level >= 70) return "from-blue-700 to-blue-900 shadow-blue-800/50";
+    return "from-gray-500 to-gray-700 shadow-gray-600/50";
   };
 
   const getSkillLabel = (level: number) => {
@@ -156,11 +156,11 @@ export default function Skills() {
 
   return (
     <div className="min-h-screen bg-github-bg">
-      <GitHubHeader 
-        activeSection="skills" 
-        onSectionChange={() => {}} 
+      <GitHubHeader
+        activeSection="skills"
+        onSectionChange={() => {}}
       />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -168,7 +168,7 @@ export default function Skills() {
             Habilidades & Expertise
           </h1>
           <p className="text-xl text-github-muted max-w-3xl mx-auto">
-            Domínio técnico abrangente com foco em tecnologias modernas, arquitetura escalável 
+            Domínio técnico abrangente com foco em tecnologias modernas, arquitetura escalável
             e práticas de desenvolvimento de classe mundial.
           </p>
         </div>
@@ -186,15 +186,15 @@ export default function Skills() {
                       <button
                         key={category.id}
                         onClick={() => setSelectedCategory(category.id)}
-                        className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-all duration-300 ${
+                        className={`w-full flex items-center space-x-3 p-2 rounded-xl transition-all duration-300 ${
                           selectedCategory === category.id
                             ? "bg-github-success/20 text-github-success border border-github-success/30"
                             : "text-github-muted hover:text-github-success hover:bg-github-surface"
                         }`}
                       >
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-4 h-4" />
                         <div className="text-left">
-                          <div className="font-medium">{category.title}</div>
+                          <div className="font-medium text-sm">{category.title}</div>
                           <div className="text-xs opacity-75">{category.description}</div>
                         </div>
                       </button>
@@ -226,52 +226,54 @@ export default function Skills() {
 
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
-            {/* Selected Category Skills */}
+            {/* Selected Category Skills - Card principal da categoria */}
             {currentCategory && (
-              <div className="morphism-card rounded-2xl p-8 floating-card">
-                <div className="flex items-center mb-8">
-                  <currentCategory.icon className="w-8 h-8 text-github-success mr-4" />
+              <div className="morphism-card rounded-2xl p-6 floating-card reflection-effect">
+                <div className="flex items-center mb-6">
+                  <currentCategory.icon className="w-7 h-7 text-github-success mr-3" />
                   <div>
-                    <h2 className="text-3xl font-bold text-github-text">{currentCategory.title}</h2>
-                    <p className="text-github-muted">{currentCategory.description}</p>
+                    <h2 className="text-2xl font-bold text-github-text">{currentCategory.title}</h2>
+                    <p className="text-github-muted text-sm">{currentCategory.description}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8">
+                <div className="grid grid-cols-1 gap-6">
                   {currentCategory.skills.map((skill, index) => (
+                    // CARD INDIVIDUAL DA HABILIDADE
                     <div key={skill.name} className="group">
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="flex items-center space-x-3">
-                          <h3 className="text-xl font-semibold text-github-text">{skill.name}</h3>
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-lg font-semibold text-github-text">{skill.name}</h3>
                           {skill.certification && (
-                            <Award className="w-5 h-5 text-yellow-500" title="Certificado" />
+                            // CORREÇÃO: Removido a prop 'title' do componente Award
+                            <Award className="w-4 h-4 text-yellow-500" /> 
                           )}
                         </div>
                         <div className="flex items-center space-x-4 text-sm text-github-muted">
-                          <span className="bg-github-surface px-3 py-1 rounded-full">{skill.experience}</span>
-                          <span className="bg-github-surface px-3 py-1 rounded-full">{skill.projects} projetos</span>
+                          <span className="bg-github-surface px-2 py-0.5 rounded-full">{skill.experience}</span>
+                          <span className="bg-github-surface px-2 py-0.5 rounded-full">{skill.projects} projetos</span>
                         </div>
                       </div>
 
                       {/* Advanced Progress Bar */}
-                      <div className="relative mb-4">
+                      <div className="relative mb-4"> {/* Ajustado mb-3 para mb-4 para consistência de espaço */}
                         {/* Background */}
-                        <div className="w-full bg-github-border rounded-full h-6 overflow-hidden shadow-inner">
+                        <div className="w-full bg-github-border rounded-full h-5 overflow-hidden shadow-inner">
                           {/* Main Progress */}
-                          <div 
-                            className={`h-6 rounded-full relative overflow-hidden transition-all duration-1200 ease-out transform group-hover:scale-y-105 bg-gradient-to-r ${getSkillColor(skill.level)}`}
+                          <div
+                            className={`h-5 rounded-full relative overflow-hidden transition-all duration-1200 ease-out transform group-hover:scale-y-105 bg-gradient-to-r ${getSkillColor(skill.level)}`}
                             style={{ width: `${skill.level}%` }}
                           >
                             {/* Animated shine effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -skew-x-12 animate-shimmer" />
-                            
+
                             {/* Pulse indicators */}
-                            <div className="absolute inset-0 flex items-center justify-end pr-2">
-                              <div className="flex space-x-1">
+                            <div className="absolute inset-0 flex items-center justify-end pr-1">
+                              <div className="flex space-x-0.5">
                                 {[...Array(Math.floor(skill.level / 20))].map((_, i) => (
                                   <div
                                     key={i}
-                                    className="w-1 h-4 bg-white/60 rounded-full animate-pulse"
+                                    className="w-1 h-3 bg-white/60 rounded-full animate-pulse"
                                     style={{ animationDelay: `${i * 200}ms` }}
                                   />
                                 ))}
@@ -281,22 +283,22 @@ export default function Skills() {
                         </div>
 
                         {/* Skill Level Label */}
-                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                          <span className="text-sm font-bold text-white drop-shadow-lg">
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                          <span className="text-xs font-bold text-white drop-shadow-lg">
                             {skill.level}%
                           </span>
                         </div>
 
                         {/* Skill Level Badge */}
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                           <span className="text-xs font-bold text-white drop-shadow-lg">
                             {getSkillLabel(skill.level)}
                           </span>
                         </div>
 
                         {/* Glow Effect */}
-                        <div 
-                          className={`absolute top-0 left-0 h-6 rounded-full opacity-50 blur-sm transition-all duration-1200 bg-gradient-to-r ${getSkillColor(skill.level)}`}
+                        <div
+                          className={`absolute top-0 left-0 h-5 rounded-full opacity-50 blur-sm transition-all duration-1200 bg-gradient-to-r ${getSkillColor(skill.level)}`}
                           style={{ width: `${skill.level}%` }}
                         />
                       </div>
@@ -318,8 +320,8 @@ export default function Skills() {
                             <div
                               key={i}
                               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                i < Math.floor(skill.level / 20) 
-                                  ? 'bg-github-success shadow-lg' 
+                                i < Math.floor(skill.level / 20)
+                                  ? 'bg-blue-500 shadow-blue-400/50'
                                   : 'bg-github-border'
                               }`}
                             />
@@ -333,34 +335,34 @@ export default function Skills() {
             )}
 
             {/* Architectural Principles */}
-            <div className="morphism-card rounded-2xl p-8 floating-card">
-              <h2 className="text-3xl font-bold text-github-text mb-8 flex items-center">
-                <Layers className="w-8 h-8 text-github-success mr-4" />
+            <div className="morphism-card rounded-2xl p-6 floating-card reflection-effect">
+              <h2 className="text-2xl font-bold text-github-text mb-6 flex items-center">
+                <Layers className="w-7 h-7 text-github-success mr-3" />
                 Princípios Arquiteturais
               </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {architecturalPrinciples.map((principle, index) => (
                   <div key={principle.title} className="group">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3">
                       <h3 className="text-xl font-semibold text-github-text">{principle.title}</h3>
                       <span className="text-lg font-bold text-github-success">{principle.level}%</span>
                     </div>
-                    
-                    <div className="mb-4">
+
+                    <div className="mb-4"> {/* Ajustado mb-3 para mb-4 para consistência de espaço */}
                       <div className="w-full bg-github-border rounded-full h-3">
-                        <div 
+                        <div
                           className={`h-3 rounded-full bg-gradient-to-r ${getSkillColor(principle.level)} transition-all duration-1000`}
                           style={{ width: `${principle.level}%` }}
                         />
                       </div>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-2">
+
+                    <div className="flex flex-wrap gap-1.5">
                       {principle.items.map((item) => (
                         <span
                           key={item}
-                          className="tech-badge px-2 py-1 rounded-full text-xs"
+                          className="tech-badge px-2 py-0.5 rounded-full text-xs"
                         >
                           {item}
                         </span>
@@ -372,23 +374,24 @@ export default function Skills() {
             </div>
 
             {/* Certifications */}
-            <div className="morphism-card rounded-2xl p-8 floating-card">
-              <h2 className="text-3xl font-bold text-github-text mb-8 flex items-center">
-                <Award className="w-8 h-8 text-github-success mr-4" />
+            <div className="morphism-card rounded-2xl p-6 floating-card reflection-effect">
+              <h2 className="text-2xl font-bold text-github-text mb-6 flex items-center">
+                <Award className="w-7 h-7 text-github-success mr-3" />
                 Certificações
               </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {certifications.map((cert, index) => (
-                  <div key={cert.name} className="flex items-center space-x-4 p-4 bg-github-surface rounded-xl group hover:bg-github-border transition-all duration-300">
-                    <div className="w-12 h-12 bg-gradient-to-br from-github-success to-github-success2 rounded-xl flex items-center justify-center">
-                      <Award className="w-6 h-6 text-white" />
+                  <div key={cert.name} className="flex items-center space-x-3 p-3 bg-github-surface rounded-xl group hover:bg-github-border transition-all duration-300">
+                    <div className="w-10 h-10 bg-gradient-to-br from-github-success to-github-success2 rounded-xl flex items-center justify-center">
+                      {/* CORREÇÃO: Removido a prop 'title' do componente Award */}
+                      <Award className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-github-text group-hover:text-github-success transition-colors">
+                      <h3 className="font-semibold text-github-text group-hover:text-github-success transition-colors text-base">
                         {cert.name}
                       </h3>
-                      <div className="flex items-center space-x-2 text-sm text-github-muted">
+                      <div className="flex items-center space-x-1.5 text-xs text-github-muted">
                         <span>{cert.issuer}</span>
                         <span>•</span>
                         <span>{cert.year}</span>

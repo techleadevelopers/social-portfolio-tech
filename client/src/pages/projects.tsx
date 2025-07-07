@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { 
-  Code, 
-  ExternalLink, 
-  Github, 
-  Star, 
-  GitFork, 
+import {
+  Code,
+  ExternalLink,
+  Github,
+  Star,
+  GitFork,
   Calendar,
   Zap,
   Database,
@@ -14,12 +14,30 @@ import {
   Shield,
   TrendingUp,
   Filter,
-  Search
-} from "lucide-react";
+  Search,
+  // NOVO: Importe os ícones do Lucide-React que você usará nos cards de projeto
+  // Baseado nos seus emojis e categorias
+  Rocket,      // Para "SalesEngine AI Pro" (🚀)
+  BookOpen,    // Para "AI School Language Platform" (🌍 - alternative for Globe/Education)
+  Bolt,        // Para "Spring Cloud Microservices" (⚡ - alternative for Zap/Backend)
+  HandCoins,   // Para "DeFi Security Framework" (🛡️ - alternative for Shield/Blockchain)
+  Bot,         // Para "HyperAgents IA Engine" (🤖)
+  Gamepad,     // Para "Arena Brasil Battle Royale" (🎮)
+  Laptop,      // Ícone genérico para tecnologias ou projetos
+  Briefcase,   // Ícone para carreira ou soluções
+  Network,     // Para microsserviços ou conectividade
+  Lock,        // Para segurança/blockchain
+  Users,       // Para usuários/comunidade
+  Palette,     // Para design/UI
+  Server,      // Para backend/infra
+} from "lucide-react"; // Verifique se todos esses ícones estão disponíveis na sua versão de lucide-react
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import GitHubHeader from "@/components/github-header";
 
+// Definindo os projetos com um novo campo 'iconComponent'
+// ou usando 'image' como uma string que mapearemos para o componente de ícone Lucide
 const projects = [
   {
     id: 1,
@@ -30,7 +48,7 @@ const projects = [
     status: "Produção",
     github: "https://github.com/techleadevelopers/sales-engine-ai-pro",
     demo: "https://salesengine-ai.demo.com",
-    image: "🚀",
+    image: "Rocket", // Alterado de "🚀" para string que mapearemos
     stats: {
       stars: 45,
       forks: 12,
@@ -52,7 +70,7 @@ const projects = [
     status: "Produção",
     github: "https://github.com/techleadevelopers/ai-school-language-app",
     demo: "https://ai-language.demo.com",
-    image: "🌍",
+    image: "Globe", // Alterado de "🌍" para string que mapearemos
     stats: {
       stars: 78,
       forks: 23,
@@ -74,7 +92,7 @@ const projects = [
     status: "Produção",
     github: "https://github.com/techleadevelopers/spring-cloud-stack-order",
     demo: "https://microservices.demo.com",
-    image: "⚡",
+    image: "Zap", // Alterado de "⚡" para string que mapearemos (ou Bolt, Network, Server)
     stats: {
       stars: 34,
       forks: 8,
@@ -96,7 +114,7 @@ const projects = [
     status: "Beta",
     github: "https://github.com/techleadevelopers/explored-contract-exploit",
     demo: "https://defi-security.demo.com",
-    image: "🛡️",
+    image: "Shield", // Alterado de "🛡️" para string que mapearemos (ou HandCoins, Lock)
     stats: {
       stars: 89,
       forks: 34,
@@ -118,7 +136,7 @@ const projects = [
     status: "Desenvolvimento",
     github: "https://github.com/techleadevelopers/next-agents-pro-sass",
     demo: "https://hyperagents.demo.com",
-    image: "🤖",
+    image: "Bot", // Alterado de "🤖" para string que mapearemos
     stats: {
       stars: 56,
       forks: 15,
@@ -140,7 +158,7 @@ const projects = [
     status: "Desenvolvimento",
     github: "https://github.com/techleadevelopers/fire-brazilian-battle-urban",
     demo: "https://arena-brasil.demo.com",
-    image: "🎮",
+    image: "Gamepad", // Alterado de "🎮" para string que mapearemos
     stats: {
       stars: 23,
       forks: 7,
@@ -157,6 +175,22 @@ const projects = [
 
 const categories = ["Todos", "SaaS", "Education", "Backend", "Blockchain", "AI/SaaS", "Gaming"];
 const statusOptions = ["Todos", "Produção", "Beta", "Desenvolvimento"];
+
+// NOVO: Função auxiliar para obter o componente de ícone Lucide
+const getProjectMainIcon = (iconName: string) => {
+  // Mapeia o nome da string para o componente Lucide
+  const IconMap: { [key: string]: React.ElementType } = {
+    Rocket: Rocket,
+    Globe: Globe,
+    Zap: Zap,
+    Shield: Shield,
+    Bot: Bot,
+    Gamepad: Gamepad,
+    // Adicione mais mapeamentos se seus projetos tiverem outros ícones
+    // Ex: 'Code': Code, 'Database': Database, 'Cloud': Cloud, etc.
+  };
+  return IconMap[iconName] || Code; // Retorna o componente, ou Code como padrão
+};
 
 export default function Projects() {
   const [filteredProjects, setFilteredProjects] = useState(projects);
@@ -176,7 +210,7 @@ export default function Projects() {
     }
 
     if (search) {
-      filtered = filtered.filter(project => 
+      filtered = filtered.filter(project =>
         project.title.toLowerCase().includes(search.toLowerCase()) ||
         project.description.toLowerCase().includes(search.toLowerCase()) ||
         project.technologies.some(tech => tech.toLowerCase().includes(search.toLowerCase()))
@@ -210,6 +244,8 @@ export default function Projects() {
     }
   };
 
+  // Esta função já retorna um componente Lucide, mas para a categoria
+  // Será usada apenas nos filtros, não no cabeçalho do card
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "SaaS": return <Cloud className="w-4 h-4" />;
@@ -224,18 +260,18 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen bg-github-bg">
-      <GitHubHeader 
-        activeSection="projects" 
-        onSectionChange={() => {}} 
+      <GitHubHeader
+        activeSection="projects"
+        onSectionChange={() => {}}
       />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold hero-text mb-4">
+        <div className="text-center mt-12 mb-12">
+          <h1 className="text-2xl md:text-3xl font-bold hero-text mb-4">
             Projetos & Soluções
           </h1>
-          <p className="text-xl text-github-muted max-w-3xl mx-auto">
+          <p className="text-1xl text-github-muted max-w-3xl mx-auto">
             Explore meu portfólio de projetos inovadores em IA, SaaS, blockchain e desenvolvimento full-stack.
             Cada projeto representa anos de experiência e dedicação à excelência técnica.
           </p>
@@ -300,106 +336,113 @@ export default function Projects() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {filteredProjects.map((project, index) => (
-            <div 
-              key={project.id} 
-              className="morphism-card rounded-2xl p-8 floating-card group"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center space-x-4">
-                  <div className="text-4xl">{project.image}</div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-github-text group-hover:text-github-success transition-colors">
-                      {project.title}
-                    </h3>
-                    <div className="flex items-center space-x-3 mt-2">
-                      <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(project.status)}`}>
-                        {project.status}
-                      </span>
-                      <div className="flex items-center space-x-1 text-github-muted">
-                        {getCategoryIcon(project.category)}
-                        <span className="text-sm">{project.category}</span>
+          {filteredProjects.map((project, index) => {
+            // NOVO: Obtém o componente do ícone Lucide
+            const IconComponent = getProjectMainIcon(project.image);
+            return (
+              <div
+                key={project.id}
+                className="morphism-card rounded-2xl p-8 floating-card group"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center space-x-4">
+                    {/* NOVO: Renderiza o componente Lucide com as classes de efeito */}
+                    <div className="text-4xl text-blue-400 neon-glow animated-neon reflection-3d">
+                      <IconComponent className="w-full h-full" /> {/* Ícone Lucide */}
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-github-text group-hover:text-github-success transition-colors">
+                        {project.title}
+                      </h3>
+                      <div className="flex items-center space-x-3 mt-2">
+                        <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(project.status)}`}>
+                          {project.status}
+                        </span>
+                        <div className="flex items-center space-x-1 text-github-muted">
+                          {getCategoryIcon(project.category)}
+                          <span className="text-sm">{project.category}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Description */}
-              <p className="text-github-muted mb-6 leading-relaxed">
-                {project.description}
-              </p>
+                {/* Description */}
+                <p className="text-github-muted mb-6 leading-relaxed">
+                  {project.description}
+                </p>
 
-              {/* Highlights */}
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold text-github-text mb-3">Destaques:</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {project.highlights.map((highlight, idx) => (
-                    <div key={idx} className="flex items-start space-x-2">
-                      <TrendingUp className="w-4 h-4 text-github-success mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-github-muted">{highlight}</span>
+                {/* Highlights */}
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-github-text mb-3">Destaques:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {project.highlights.map((highlight, idx) => (
+                      <div key={idx} className="flex items-start space-x-2">
+                        <TrendingUp className="w-4 h-4 text-github-success mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-github-muted">{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Technologies */}
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold text-github-text mb-3">Tecnologias:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="tech-badge px-3 py-1 rounded-full text-xs"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-6 text-sm text-github-muted">
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4" />
+                      <span>{project.stats.stars}</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Technologies */}
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold text-github-text mb-3">Tecnologias:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="tech-badge px-3 py-1 rounded-full text-xs"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-6 text-sm text-github-muted">
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4" />
-                    <span>{project.stats.stars}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <GitFork className="w-4 h-4" />
-                    <span>{project.stats.forks}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="w-4 h-4" />
-                    <span>{project.stats.users} usuários</span>
+                    <div className="flex items-center space-x-1">
+                      <GitFork className="w-4 h-4" />
+                      <span>{project.stats.forks}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Users className="w-4 h-4" /> {/* Usando Users para "usuários" */}
+                      <span>{project.stats.users} usuários</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Actions */}
-              <div className="flex space-x-4">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex-1 border-github-success text-github-success hover:bg-github-success hover:text-white"
-                  onClick={() => window.open(project.github, '_blank')}
-                >
-                  <Github className="w-4 h-4 mr-2" />
-                  Código
-                </Button>
-                <Button 
-                  size="sm"
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800"
-                  onClick={() => window.open(project.demo, '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Demo
-                </Button>
+                {/* Actions */}
+                <div className="flex space-x-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 border-github-success text-github-success hover:bg-github-success hover:text-white"
+                    onClick={() => window.open(project.github, '_blank')}
+                  >
+                    <Github className="w-4 h-4 mr-2" />
+                    Código
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800"
+                    onClick={() => window.open(project.demo, '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Demo
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* No results */}

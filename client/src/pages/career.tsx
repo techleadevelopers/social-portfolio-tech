@@ -172,12 +172,12 @@ export default function Career() {
       case "experience":
         return (
           <div className="space-y-8">
-            <h2 className="text-3xl font-bold text-github-text mb-6">Experiência Profissional</h2>
+            <h2 className="text-2xl font-bold text-github-text mb-6">Experiência Profissional</h2>
             {experiences.map((exp) => (
               <div key={exp.id} className="morphism-card rounded-2xl p-8 floating-card">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-3">
                   <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-github-text mb-2">{exp.position}</h3>
+                    <h3 className="text-xl font-bold text-github-text mb-2">{exp.position}</h3>
                     <div className="flex items-center text-github-success mb-4">
                       <Building2 className="w-5 h-5 mr-2" />
                       <span className="font-semibold">{exp.company}</span>
@@ -192,11 +192,11 @@ export default function Career() {
                 <p className="text-github-muted mb-6 text-lg leading-relaxed">{exp.description}</p>
                 
                 <div className="mb-6">
-                  <h4 className="text-lg font-semibold text-github-text mb-3">Principais Conquistas:</h4>
+                  <h4 className="text-sx font-semibold text-github-text mb-3">Principais Conquistas:</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {exp.achievements.map((achievement, index) => (
                       <div key={index} className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-github-success mt-0.5 mr-3 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-github-success mt-0.5 mr-3 flex-shrink-0" />
                         <span className="text-github-muted">{achievement}</span>
                       </div>
                     ))}
@@ -204,7 +204,7 @@ export default function Career() {
                 </div>
                 
                 <div>
-                  <h4 className="text-lg font-semibold text-github-text mb-3">Tecnologias Utilizadas:</h4>
+                  <h4 className="text-sx font-semibold text-github-text mb-3">Tecnologias Utilizadas:</h4>
                   <div className="flex flex-wrap gap-2">
                     {exp.technologies.map((tech) => (
                       <span key={tech} className="tech-badge px-3 py-1 rounded-full text-sm">
@@ -465,9 +465,9 @@ export default function Career() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 relative top-16">
             <div className="sticky top-8 morphism-card rounded-2xl p-6 floating-card">
-              <h2 className="text-xl font-bold text-github-text mb-6">Carreira</h2>
+              <h2 className="text-1xl font-bold text-github-text mb-6">Carreira</h2>
               <nav className="space-y-2">
                 {menuItems.map((item) => {
                   const Icon = item.icon;
