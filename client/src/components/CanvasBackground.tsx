@@ -11,76 +11,228 @@ const CanvasBackground: React.FC = () => {
     if (!ctx) return;
 
     let animationFrameId: number;
-    const particles: { x: number; y: number; vx: number; vy: number; radius: number; color: string; opacity: number }[] = [];
-    const numParticles = 300; // Número de partículas
-    const maxRadius = 2; // Tamanho máximo da partícula
-    const minRadius = 0.5; // Tamanho mínimo da partícula
-    const connectionDistance = 150; // Distância para conectar partículas
 
-    // Função para ajustar o canvas ao tamanho da janela
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    // --- Configurações para Planeta Terra ---
+    type PlanetData = {
+      name: string;
+      imageUrl: string;
+      image?: HTMLImageElement; // Será carregada dinamicamente
+      x: number;
+      y: number;
+      radius: number;
+      rotationSpeed: number;
+      currentRotation: number;
+      tiltAngle: number; // Para simular uma inclinação 2D simples
     };
 
-    // Cria as partículas
-    for (let i = 0; i < numParticles; i++) {
-          particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            // Modificação aqui:
-            vx: (Math.random() - 0.5) * 0.5, // Velocidade X: -0.25 a +0.25 para movimento sutil em ambas as direções
-            vy: (Math.random() * 0.5) + 0.5, // Velocidade Y: Sempre positiva (para baixo), entre 0.5 e 1.0 para velocidade controlada
-            radius: Math.random() * (maxRadius - minRadius) + minRadius,
-            color: '#60a5fa', // Cor azul suave
-            opacity: Math.random() * 0.9 + 0.05, // Opacidade sutil
-          });
-    }
+    // Apenas a Terra
+    const planetsData: Omit<PlanetData, 'x' | 'y' | 'radius' | 'rotationSpeed' | 'currentRotation' | 'image' | 'tiltAngle'>[] = [
+      { name: "earth", imageUrl: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/332937/earth.jpg" },
+    ];
+    let loadedPlanets: PlanetData[] = [];
+
+    const maxPlanetRadius = 150; // Tamanho da Terra
+    const minPlanetRadius = 100;
+    
+    // Constantes para alinhamento da Terra na lateral
+    const minVisibleFraction = 0.7; // Mínimo de 70% do raio da Terra deve estar visível
+    const maxEdgeRandomOffset = 0.15; // A Terra pode se mover aleatoriamente até 15% da largura da tela para dentro da borda.
+
+    const dpr = window.devicePixelRatio || 1; // Densidade de pixels do dispositivo
+
+    // Função para criar/posicionar um planeta (a Terra, neste caso)
+    const initializePlanet = (planetBase: typeof planetsData[0], width: number, height: number, isLeft: boolean): Promise<PlanetData> => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = planetBase.imageUrl;
+            img.onload = () => {
+                const radius = Math.random() * (maxPlanetRadius - minPlanetRadius) + minPlanetRadius;
+                
+                let xPos: number;
+                // LÓGICA DE ALINHAMENTO X
+                if (isLeft) {
+                    xPos = (radius * (1 - minVisibleFraction)) + (Math.random() * (width * maxEdgeRandomOffset));
+                } else {
+                    xPos = (width - (radius * (1 - minVisibleFraction))) - (Math.random() * (width * maxEdgeRandomOffset));
+                }
+
+                // Posicionamento Y: Centralizado, com alguma variação
+                const yPos = Math.random() * height * 0.4 + height * 0.3; 
+
+                resolve({
+                    ...planetBase,
+                    image: img,
+                    x: xPos,
+                    y: yPos,
+                    radius: radius,
+                    rotationSpeed: (Math.random() * 0.0005 + 0.0002) * (Math.random() < 0.5 ? 1 : -1), // Rotação lenta
+                    currentRotation: Math.random() * Math.PI * 2,
+                    tiltAngle: Math.random() * 0.1 - 0.05 // Pequeno tilt
+                });
+            };
+            img.onerror = () => {
+                console.error(`Failed to load planet image: ${planetBase.imageUrl}`);
+                reject(new Error(`Failed to load ${planetBase.name} image.`));
+            };
+        });
+    };
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr);
+
+      // Re-posiciona a Terra no resize
+      if (loadedPlanets.length > 0) {
+        const p = loadedPlanets[0]; // Apenas a Terra
+        const isLeft = true; // A Terra será sempre na lateral esquerda
+        p.radius = Math.random() * (maxPlanetRadius - minPlanetRadius) + minPlanetRadius; 
+        
+        // LÓGICA DE ALINHAMENTO X (MESMA QUE initializePlanet)
+        p.x = (p.radius * (1 - minVisibleFraction)) + (Math.random() * (window.innerWidth * maxEdgeRandomOffset));
+        
+        p.y = Math.random() * window.innerHeight * 0.4 + window.innerHeight * 0.3;
+      }
+    };
+
+    // --- Início da Lógica Principal ---
+    let planetsAreLoaded = false;
+    // Carrega apenas a Terra na lateral esquerda (index 0)
+    Promise.all([
+        initializePlanet(planetsData[0], window.innerWidth, window.innerHeight, true), // A Terra será o primeiro e único planeta, à esquerda
+    ]).then(planets => {
+        loadedPlanets = planets;
+        planetsAreLoaded = true;
+    }).catch(error => {
+        console.error("Error loading planet:", error);
+    });
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpa o canvas
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr); // Limpa apenas a Terra do frame anterior
 
-      for (let i = 0; i < numParticles; i++) {
-        const p1 = particles[i];
+      // --- Desenha a Terra (apenas se a imagem estiver carregada) ---
+      if (planetsAreLoaded && loadedPlanets.length > 0) {
+        const planet = loadedPlanets[0]; // A Terra
+        if (!planet.image) return;
 
-        // Atualiza posição
-        p1.x += p1.vx;
-        p1.y += p1.vy;
+        // Rotação da superfície do planeta
+        planet.currentRotation += planet.rotationSpeed;
 
-        // Mantém partículas dentro da tela
-        if (p1.x < 0 || p1.x > canvas.width) p1.vx *= -1;
-        if (p1.y < 0 || p1.y > canvas.height) p1.vy *= -1;
+        ctx.save();
+        ctx.translate(planet.x, planet.y); // Move o contexto para o centro do planeta
+        ctx.rotate(planet.tiltAngle); // Aplica a inclinação (tilt)
 
-        // Desenha a partícula
+        // Cria um clipping mask circular para o planeta
         ctx.beginPath();
-        ctx.arc(p1.x, p1.y, p1.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${parseInt(p1.color.slice(1, 3), 16)}, ${parseInt(p1.color.slice(3, 5), 16)}, ${parseInt(p1.color.slice(5, 7), 16)}, ${p1.opacity})`;
+        ctx.arc(0, 0, planet.radius, 0, Math.PI * 2);
+        ctx.clip(); // Limita o desenho ao círculo
+
+        // --- NOVO: Desenha a imagem como um círculo completo (AJUSTADO) ---
+        // Calcula o offset X para simular a rotação da superfície
+        // O offset deve ser calculado para cobrir a circunferência do planeta.
+        // A imagem da Terra é 2:1, então a largura é o dobro da altura.
+        // Para cobrir a circunferência, o offset deve se basear no diâmetro do planeta (radius * 2).
+        const circumference = Math.PI * (planet.radius * 2);
+        const imageWidthPerCircumference = planet.image.width / circumference;
+        const rotationOffset = (planet.currentRotation / (Math.PI * 2)) * planet.image.width; // Offset X em pixels da imagem
+        
+        // Desenha a imagem usando drawImage diretamente, sem pattern,
+        // para maior controle sobre como a imagem é mapeada e evitar costuras.
+        // Vamos desenhar a imagem duas vezes, lado a lado, para garantir que cubra a circunferência
+        // e evitar a linha branca na "costura".
+        const dx = -planet.radius;
+        const dy = -planet.radius;
+        const dWidth = planet.radius * 2;
+        const dHeight = planet.radius * 2;
+
+        // Desenha a imagem principal
+        ctx.drawImage(
+            planet.image,
+            (rotationOffset % planet.image.width), // sx: Ponto de partida X na imagem
+            0,                                     // sy
+            planet.image.width,                    // sWidth
+            planet.image.height,                   // sHeight
+            dx,                                    // dx
+            dy,                                    // dy
+            dWidth,                                // dWidth
+            dHeight                                // dHeight
+        );
+
+        // Desenha a imagem novamente, à direita ou à esquerda da primeira, para preencher a lacuna
+        // Isso é crucial para cobrir a "costura" que aparece quando a textura rotaciona
+        if (rotationOffset % planet.image.width > 0) { // Se a textura está se movendo para a direita
+            ctx.drawImage(
+                planet.image,
+                (rotationOffset % planet.image.width) - planet.image.width, // sx: Ponto de partida X (para o wrap-around)
+                0,
+                planet.image.width,
+                planet.image.height,
+                dx,
+                dy,
+                dWidth,
+                dHeight
+            );
+        } else if (rotationOffset % planet.image.width < 0) { // Se a textura está se movendo para a esquerda
+            ctx.drawImage(
+                planet.image,
+                (rotationOffset % planet.image.width) + planet.image.width, // sx: Ponto de partida X (para o wrap-around)
+                0,
+                planet.image.width,
+                planet.image.height,
+                dx,
+                dy,
+                dWidth,
+                dHeight
+            );
+        }
+
+        // --- Efeitos de Atmosfera e Sombra (AJUSTADOS) ---
+        // Sombra lateral para profundidade
+        const shadowGradient = ctx.createRadialGradient(
+          planet.radius * -0.3, planet.radius * -0.3, planet.radius * 0.7, // Ponto de origem da luz
+          0, 0, planet.radius * 1.0 // Ponto final da sombra
+        );
+        shadowGradient.addColorStop(0, 'rgba(0,0,0,0)');
+        shadowGradient.addColorStop(0.5, 'rgba(0,0,0,0.1)'); // Sombra interna BEM SUTIL
+        shadowGradient.addColorStop(1, 'rgba(0,0,0,0.3)');   // Borda mais escura, mas AINDA MAIS SUTIL
+
+        ctx.fillStyle = shadowGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, planet.radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Desenha linhas de conexão
-        for (let j = i + 1; j < numParticles; j++) {
-          const p2 = particles[j];
-          const dist = Math.sqrt(Math.pow(p1.x - p2.x, 22) + Math.pow(p1.y - p2.y, 22));
+        // Brilho de atmosfera / Luz ambiente suave
+        const atmosphereGradient = ctx.createRadialGradient(
+          0, 0, planet.radius * 0.8,
+          0, 0, planet.radius * 1.1
+        );
+        atmosphereGradient.addColorStop(0, 'transparent');
+        atmosphereGradient.addColorStop(0.8, 'rgba(59, 130, 246, 0.05)'); // Azul sutil
+        atmosphereGradient.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = atmosphereGradient;
+        ctx.beginPath();
+        ctx.arc(0, 0, planet.radius, 0, Math.PI * 2);
+        ctx.fill();
 
-          if (dist < connectionDistance) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(${parseInt(p1.color.slice(1, 3), 16)}, ${parseInt(p1.color.slice(3, 5), 16)}, ${parseInt(p1.color.slice(5, 7), 16)}, ${(1 - dist / connectionDistance) * 0.05})`; // Opacidade da linha
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
+        ctx.restore(); // Restaura o estado do contexto
       }
-
-      animationFrameId = requestAnimationFrame(draw);
+      
+      // Não há estrelas aqui, então apenas a Terra é desenhada e limpa a cada frame.
     };
 
-    // Event Listeners
+    // Este listener é para o background-image estático.
     window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // Define o tamanho inicial e o posicionamento da Terra
 
-    resizeCanvas(); // Define o tamanho inicial
-    draw(); // Inicia a animação
+    // Inicia a animação da Terra
+    const animateFrame = () => {
+        draw();
+        animationFrameId = requestAnimationFrame(animateFrame);
+    };
+    animateFrame(); // Começa o loop de animação.
 
     // Cleanup
     return () => {
@@ -90,7 +242,16 @@ const CanvasBackground: React.FC = () => {
   }, []); // Executa apenas uma vez no mont do componente
 
   return (
-    <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none" />
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 z-0 pointer-events-none"
+      style={{
+        backgroundImage: "url('https://marclopezavila.github.io/planet-defense-game/img/space.jpg')",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+      }}
+    />
   );
 };
 
